@@ -2,7 +2,8 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Ajuste viewport estándar, el zoom lo controlamos por CSS para mayor precisión -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Abyss Rift - La Llamada</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Importando módulos de Firebase -->
@@ -10,7 +11,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getFirestore, doc, getDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
         
-        // Exponer funciones al scope global
         window.firebaseModules = { initializeApp, getFirestore, doc, getDoc, updateDoc, onSnapshot };
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Cormorant+Garamond:ital,wght@0,400;0,700;1,400&family=Metamorphous&display=swap" rel="stylesheet">
@@ -29,10 +29,40 @@
             background: radial-gradient(circle at center, #2e1065, #0f172a);
             color: var(--text-main);
             font-family: 'Cormorant Garamond', serif;
-            overflow: hidden;
+            overflow: hidden; /* Mantiene la app contenida */
             height: 100vh;
             width: 100vw;
             position: relative;
+        }
+
+        /* --- MEDIA QUERIES PARA CELULAR (LA CLAVE DEL ÉXITO) --- */
+        @media (max-width: 768px) {
+            body {
+                overflow-y: auto; /* Permitir scroll si es muy necesario en pantallas muy pequeñas */
+            }
+            .parchment {
+                zoom: 0.8; /* ESTO ES EL ZOOM AL 80% QUE PEDISTE */
+                width: 95% !important; /* Aprovechar más el ancho */
+                padding: 1.5rem !important; /* Menos relleno para ganar espacio */
+                margin-top: 1rem;
+                margin-bottom: 1rem;
+            }
+            .slide {
+                padding-top: 2rem; /* Evitar que el pergamino toque el borde superior */
+                align-items: flex-start !important; /* Alinear arriba en vez de centro para ver el título */
+                height: auto !important;
+                min-height: 100vh;
+                overflow-y: auto;
+            }
+            .title-font {
+                font-size: 2rem !important; /* Títulos más controlados */
+            }
+            h1 { font-size: 2.8rem !important; }
+            
+            /* Ajuste específico para la pantalla de peligro en móvil */
+            .parchment.danger-mode h2 {
+                font-size: 2rem !important;
+            }
         }
 
         .magic-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
@@ -146,8 +176,6 @@
         .slot-row { padding: 8px 0; border-bottom: 1px solid rgba(180, 83, 9, 0.2); font-family: 'Cormorant Garamond', serif; display: flex; align-items: center; transition: all 0.5s ease; }
         .slot-empty { color: #a8a29e; font-style: italic; opacity: 0.7; font-size: 1.1rem; }
         .highlight-text { color: #7c2d12; font-weight: bold; border-bottom: 2px solid rgba(180, 83, 9, 0.5); }
-        
-        /* CORREGIDO: Eliminada la font-size fija para que funcione text-lg */
         .disclaimer-box { background-color: rgba(234, 179, 8, 0.15); border-left: 4px solid #b45309; padding: 8px; color: #451a03; margin-top: 5px; line-height: 1.4; }
 
         .custom-scrollbar::-webkit-scrollbar { width: 8px; }
@@ -298,7 +326,6 @@
                 <div class="input-group">
                     <label class="magic-label">Nombre de Minecraft (Copia y Pega)</label>
                     <input type="text" id="username" class="magic-input" placeholder="Ej: SteveGamer99">
-                    <!-- AQUI ESTABA EL ERROR: Cambiado de text-sm a text-lg y sin restricción CSS -->
                     <div class="disclaimer-box text-lg font-medium">
                         <strong>⚠️ CRÍTICO:</strong> Copia el nombre <u>exacto</u>. Si fallas una letra, la Whitelist no te dejará entrar.
                     </div>
@@ -307,10 +334,9 @@
                 <div class="input-group mt-5">
                     <label class="magic-label">Especialización</label>
                     <select id="user-class" class="magic-select">
-                        <option value="Paladín">🛡️ Paladín</option>
-                        <option value="Hechicero">✨ Hechicero</option>
-                        <option value="Clérigo">🌿 Clérigo</option>
-                        <option value="Bárbaro">⚔️ Bárbaro</option>
+                        <option value="Tanque">🛡️ Tanque</option>
+                        <option value="Mago">✨ Mago</option>
+                        <option value="Curador">🌿 Curador</option>
                         <option value="Duelista">🗡️ Duelista</option>
                         <option value="Tirador">🏹 Tirador</option>
                     </select>
