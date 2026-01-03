@@ -39,13 +39,16 @@
         .parchment {
             background: var(--parchment-light);
             background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png');
-            padding: 2.5rem;
-            max-width: 900px;
-            width: 90%;
+            padding: 3rem; /* Aumentado padding */
+            max-width: 1000px; /* Aumentado ancho máximo para acomodar texto más grande */
+            width: 95%;
             border-radius: 12px;
             box-shadow: 0 0 0 4px #b48c36 inset, 0 0 0 6px #5c4033 inset, 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 40px rgba(212, 175, 55, 0.2);
             position: relative;
             border: 1px solid #d4c5a3;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         .gem { position: absolute; width: 24px; height: 24px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #60a5fa, #1e3a8a); border: 2px solid #d4af37; box-shadow: 0 0 10px rgba(59, 130, 246, 0.6); z-index: 10; }
@@ -55,7 +58,8 @@
             background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
             color: #d4af37;
             border: 1px solid #d4af37;
-            padding: 12px 30px;
+            padding: 14px 35px; /* Botones más grandes */
+            font-size: 1.1rem; /* Texto botón más grande */
             font-family: 'Cinzel', serif;
             font-weight: 700;
             cursor: pointer;
@@ -72,14 +76,17 @@
         .divider { display: flex; align-items: center; justify-content: center; margin: 1.5rem 0; opacity: 0.9; color: #854d0e; font-size: 1.5rem; }
         .divider::before, .divider::after { content: ''; height: 2px; background: linear-gradient(90deg, transparent, #854d0e, transparent); flex: 1; margin: 0 15px; }
 
-        .magic-input, .magic-select { background: rgba(255, 255, 255, 0.9); border: 2px solid #b45309; padding: 8px 12px; width: 100%; font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 600; color: #1a120b; outline: none; border-radius: 4px; }
+        /* Aumentado tamaño de fuente inputs y labels */
+        .magic-label { display: block; font-family: 'Cinzel', serif; font-size: 1.1rem; font-weight: bold; color: #7c2d12; margin-bottom: 0.4rem; text-transform: uppercase; }
+        .magic-input, .magic-select { background: rgba(255, 255, 255, 0.9); border: 2px solid #b45309; padding: 10px 14px; width: 100%; font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 600; color: #1a120b; outline: none; border-radius: 4px; }
         
-        .slot-row { padding: 8px 0; border-bottom: 1px solid rgba(180, 83, 9, 0.2); font-family: 'Cormorant Garamond', serif; display: flex; align-items: center; transition: all 0.5s ease; }
-        .slot-empty { color: #a8a29e; font-style: italic; opacity: 0.7; }
+        .slot-row { padding: 10px 0; border-bottom: 1px solid rgba(180, 83, 9, 0.2); font-family: 'Cormorant Garamond', serif; display: flex; align-items: center; transition: all 0.5s ease; }
+        .slot-empty { color: #a8a29e; font-style: italic; opacity: 0.7; font-size: 1.2rem; }
         .highlight-text { color: #7c2d12; font-weight: bold; border-bottom: 2px solid rgba(180, 83, 9, 0.5); }
-        
+        .disclaimer-box { background-color: rgba(234, 179, 8, 0.15); border-left: 4px solid #b45309; padding: 10px; font-size: 1rem; color: #451a03; margin-top: 5px; line-height: 1.4; }
+
         /* Scrollbar personalizado */
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #b45309; border-radius: 20px; }
 
         /* Loader */
@@ -91,7 +98,7 @@
 
     <div class="magic-bg" id="particles"></div>
 
-    <!-- SLIDE 1 -->
+    <!-- SLIDE 1 (Portada - Mantenida igual) -->
     <div class="slide active" id="slide-1">
         <div class="parchment text-center">
             <div class="gem tl"></div><div class="gem tr"></div><div class="gem bl"></div><div class="gem br"></div>
@@ -107,122 +114,120 @@
         </div>
     </div>
 
-    <!-- SLIDE 2 -->
+    <!-- SLIDE 2 (Aumentado tamaño) -->
     <div class="slide" id="slide-2">
-        <h2 class="text-4xl text-[#fef3c7] mb-6 title-font text-center drop-shadow-md">Arte y Hogar</h2>
+        <h2 class="text-5xl text-[#fef3c7] mb-8 title-font text-center drop-shadow-md">Arte y Hogar</h2>
         <div class="parchment">
             <div class="gem tl"></div><div class="gem tr"></div><div class="gem bl"></div><div class="gem br"></div>
-            <div class="flex flex-col md:flex-row gap-8 items-center">
-                <div class="text-[6rem] drop-shadow-lg">🏰</div>
+            <div class="flex flex-col md:flex-row gap-8 items-center justify-center h-full">
+                <div class="text-[8rem] drop-shadow-lg hidden md:block">🏰</div>
                 <div>
-                    <h3 class="text-2xl font-bold mb-2 title-font text-[#1e3a8a] border-b border-[#b45309] inline-block">Tu Refugio</h3>
-                    <p class="mb-4 text-lg text-[#2c241b] font-medium">No todo es guerra. Si deseas diseñar la torre perfecta o una cabaña junto al lago... <span class="highlight-text">hazlo.</span></p>
-                    <div class="bg-[#fff7ed] p-4 rounded border-l-4 border-[#b45309]">
-                        <p class="text-xs font-bold text-[#9a3412] uppercase">Nota del Cronista:</p>
-                        <p class="italic text-[#431407] text-md">"Existe un <strong>Final Canónico</strong>. Construye por la belleza del momento."</p>
+                    <h3 class="text-4xl font-bold mb-4 title-font text-[#1e3a8a] border-b border-[#b45309] inline-block">Tu Refugio</h3>
+                    <p class="mb-6 text-2xl text-[#2c241b] font-medium leading-relaxed">No todo es guerra. Si deseas diseñar la torre perfecta o una cabaña junto al lago... <span class="highlight-text">hazlo.</span></p>
+                    <div class="bg-[#fff7ed] p-6 rounded border-l-4 border-[#b45309]">
+                        <p class="text-sm font-bold text-[#9a3412] uppercase mb-1">Nota del Cronista:</p>
+                        <p class="italic text-[#431407] text-xl">"Existe un <strong>Final Canónico</strong>. Construye por la belleza del momento."</p>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="mt-6"><button class="btn-magic" onclick="nextSlide(3)">Continuar</button></div>
+        <div class="mt-8"><button class="btn-magic" onclick="nextSlide(3)">Continuar</button></div>
     </div>
 
-    <!-- SLIDE 3 -->
+    <!-- SLIDE 3 (Aumentado tamaño) -->
     <div class="slide" id="slide-3">
-        <h2 class="text-4xl text-[#fef3c7] mb-6 title-font text-center drop-shadow-md">Código de Honor</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-5xl px-4">
-            <div class="parchment text-center" style="padding: 1.5rem;">
-                <h3 class="text-2xl font-bold title-font text-[#15803d]">Caza Libre</h3>
-                <div class="text-5xl my-2">🏹</div>
-                <p class="text-md font-medium">¿Explorar, recolectar, mazmorras pequeñas?</p>
-                <div class="bg-green-100 p-2 mt-2 rounded border border-green-700 text-green-900 font-bold">¡ADELANTE!</div>
+        <h2 class="text-5xl text-[#fef3c7] mb-8 title-font text-center drop-shadow-md">Código de Honor</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-6xl px-4">
+            <div class="parchment text-center" style="padding: 2.5rem;">
+                <h3 class="text-3xl font-bold title-font text-[#15803d]">Caza Libre</h3>
+                <div class="text-6xl my-4">🏹</div>
+                <p class="text-xl font-medium mb-4">¿Explorar, recolectar, mazmorras pequeñas?</p>
+                <div class="bg-green-100 p-3 rounded border border-green-700 text-green-900 font-bold text-xl">¡ADELANTE!</div>
             </div>
-            <div class="parchment text-center" style="padding: 1.5rem;">
-                <h3 class="text-2xl font-bold title-font text-[#be123c]">La Campaña</h3>
-                <div class="text-5xl my-2">🐲</div>
-                <p class="text-md font-medium">Jefes de Historia y Eventos Principales.</p>
-                <div class="bg-red-100 p-2 mt-2 rounded border border-red-800 text-[#be123c] font-bold">SOLO EN GRUPO</div>
+            <div class="parchment text-center" style="padding: 2.5rem;">
+                <h3 class="text-3xl font-bold title-font text-[#be123c]">La Campaña</h3>
+                <div class="text-6xl my-4">🐲</div>
+                <p class="text-xl font-medium mb-4">Jefes de Historia y Eventos Principales.</p>
+                <div class="bg-red-100 p-3 rounded border border-red-800 text-[#be123c] font-bold text-xl">SOLO EN GRUPO</div>
             </div>
         </div>
-        <div class="mt-6"><button class="btn-magic" onclick="nextSlide(4)">La Zona Prohibida</button></div>
+        <div class="mt-8"><button class="btn-magic" onclick="nextSlide(4)">La Zona Prohibida</button></div>
     </div>
 
-    <!-- SLIDE 4 -->
+    <!-- SLIDE 4 (Aumentado tamaño) -->
     <div class="slide" id="slide-4">
-        <div class="parchment text-center" style="border: 2px solid #7f1d1d; background: #fff5f5;">
+        <div class="parchment text-center" style="border: 3px solid #7f1d1d; background: #fff5f5;">
             <div class="gem tl"></div><div class="gem tr"></div><div class="gem bl"></div><div class="gem br"></div>
-            <h2 class="text-3xl font-black text-[#9f1239] mb-4 uppercase title-font">⚠️ El Borde del Mundo ⚠️</h2>
-            <div class="mb-6 border-y border-[#9f1239] py-2 inline-block">
-                <p class="text-xl font-bold elegant-serif text-[#7f1d1d]">Límite: Radio de 625 Chunks</p>
+            <h2 class="text-5xl font-black text-[#9f1239] mb-6 uppercase title-font">⚠️ El Borde del Mundo ⚠️</h2>
+            <div class="mb-8 border-y-2 border-[#9f1239] py-3 inline-block">
+                <p class="text-3xl font-bold elegant-serif text-[#7f1d1d]">Límite: Radio de 625 Chunks</p>
             </div>
-            <p class="text-lg mb-6 text-[#4a044e] font-bold">Más allá, la realidad colapsa. No cruces la línea.</p>
-            <div class="bg-[#2e1065] text-white p-4 rounded text-left mx-auto max-w-md">
-                <ul class="space-y-2 text-sm">
+            <p class="text-2xl mb-8 text-[#4a044e] font-bold">Más allá, la realidad colapsa. No cruces la línea.</p>
+            <div class="bg-[#2e1065] text-white p-6 rounded text-left mx-auto max-w-2xl">
+                <ul class="space-y-4 text-xl">
                     <li>⚡ El servidor colapsará para todos.</li>
                     <li>🕸️ Tu personaje quedará en el limbo.</li>
                     <li class="text-red-300 font-bold">💀 Borraremos tu inventario para salvar el server.</li>
                 </ul>
             </div>
-            <div class="mt-6"><button class="btn-magic" style="border-color:#9f1239; color:#9f1239" onclick="nextSlide(5)">Entendido</button></div>
+            <div class="mt-8"><button class="btn-magic" style="border-color:#9f1239; color:#9f1239" onclick="nextSlide(5)">Entendido</button></div>
         </div>
     </div>
 
-    <!-- SLIDE 5: FIREBASE LOGIC -->
+    <!-- SLIDE 5: FIREBASE LOGIC (Aumentado tamaño) -->
     <div class="slide" id="slide-5">
-        <h2 class="text-5xl text-[#fef3c7] mb-2 title-font text-center drop-shadow-md">El Pacto Final</h2>
-        <div class="parchment flex flex-col items-center" style="max-width: 550px; padding: 2rem;">
+        <h2 class="text-6xl text-[#fef3c7] mb-4 title-font text-center drop-shadow-md">El Pacto Final</h2>
+        <div class="parchment flex flex-col items-center" style="max-width: 800px; padding: 3rem;">
             <div class="gem tl"></div><div class="gem tr"></div>
             
-            <div class="text-center w-full mb-4">
-                <p class="uppercase font-bold text-xs tracking-[0.3em] text-[#854d0e]">Primera Reunión</p>
-                <p class="text-3xl font-bold elegant-serif text-[#1e1b4b]">10 de Enero de 2026</p>
+            <div class="text-center w-full mb-6">
+                <p class="uppercase font-bold text-sm tracking-[0.3em] text-[#854d0e] mb-2">Primera Reunión</p>
+                <p class="text-4xl font-bold elegant-serif text-[#1e1b4b]">10 de Enero de 2026</p>
             </div>
 
-            <!-- TABLA DE JUGADORES (CARGADA DESDE FIREBASE) -->
-            <div id="roster-display" class="w-full mb-6 bg-white/50 border border-[#b45309] rounded p-4 shadow-inner">
-                 <h3 class="text-lg font-bold mb-3 text-center title-font text-[#1e3a8a] border-b border-[#b45309]/30 pb-2">❖ Los 8 Elegidos ❖</h3>
+            <!-- TABLA DE JUGADORES -->
+            <div id="roster-display" class="w-full mb-8 bg-white/50 border border-[#b45309] rounded p-6 shadow-inner">
+                 <h3 class="text-2xl font-bold mb-4 text-center title-font text-[#1e3a8a] border-b border-[#b45309]/30 pb-3">❖ Los 8 Elegidos ❖</h3>
                  
-                 <!-- Loader mientras carga la DB -->
                  <div id="db-loader" class="loader"></div>
 
-                 <!-- Contenedor de la lista -->
-                 <div id="slots-container" class="space-y-1 max-h-[180px] overflow-y-auto pr-2 custom-scrollbar hidden">
+                 <!-- Contenedor de la lista más alto -->
+                 <div id="slots-container" class="space-y-2 max-h-[250px] overflow-y-auto pr-4 custom-scrollbar hidden">
                     <!-- SE LLENA CON JAVASCRIPT -->
                  </div>
             </div>
 
             <!-- FORMULARIO -->
-            <div id="signup-form" class="w-full hidden"> <!-- Oculto hasta que cargue la DB -->
+            <div id="signup-form" class="w-full hidden">
                 <div class="input-group">
                     <label class="magic-label">Nombre de Minecraft (Copia y Pega)</label>
                     <input type="text" id="username" class="magic-input" placeholder="Ej: SteveGamer99">
-                    <div class="bg-yellow-500/10 border-l-4 border-yellow-700 p-2 mt-1 text-xs text-[#451a03]">
+                    <div class="disclaimer-box">
                         <strong>⚠️ CRÍTICO:</strong> Copia el nombre <u>exacto</u>. Si fallas una letra, la Whitelist no te dejará entrar.
                     </div>
                 </div>
 
-                <div class="input-group mt-3">
+                <div class="input-group mt-6">
                     <label class="magic-label">Especialización</label>
                     <select id="user-class" class="magic-select">
-                        <option value="Paladín">🛡️ Paladín</option>
-                        <option value="Hechicero">✨ Hechicero</option>
-                        <option value="Clérigo">🌿 Clérigo</option>
-                        <option value="Bárbaro">⚔️ Bárbaro</option>
-                        <option value="Duelista">🗡️ Duelista</option>
-                        <option value="Tirador">🏹 Tirador</option>
+                        <option value="Tanque">🛡️ Tanque</option>
+                        <option value="Mago">✨ Mago</option>
+                        <option value="Curador">🌿 Curador</option>
+                        <option value="Guerrero">⚔️ Guerrero</option>
+                        <option value="Explorador">🏹 Explorador</option>
                     </select>
-                    <p class="text-xs text-[#7c2d12] mt-1 italic">* Solo es una referencia, no genera cambio ni consecuencia en el juego.</p>
+                    <p class="text-sm text-[#7c2d12] mt-2 italic font-semibold">* Solo referencia, puedes cambiar en el juego.</p>
                 </div>
 
-                <div class="text-center w-full mt-5">
-                    <button id="join-btn" class="w-full text-lg bg-gradient-to-r from-[#1e3a8a] to-[#1e40af] text-white py-3 px-6 rounded shadow-lg elegant-serif border border-[#60a5fa] flex items-center justify-center gap-3" onclick="submitToFirebase()">
-                        <span class="text-xl">✒️</span> <span class="tracking-widest font-bold">RECLAMAR LUGAR</span>
+                <div class="text-center w-full mt-8">
+                    <button id="join-btn" class="w-full text-xl bg-gradient-to-r from-[#1e3a8a] to-[#1e40af] text-white py-4 px-8 rounded shadow-lg elegant-serif border border-[#60a5fa] flex items-center justify-center gap-3" onclick="submitToFirebase()">
+                        <span class="text-2xl">✒️</span> <span class="tracking-widest font-bold">RECLAMAR LUGAR</span>
                     </button>
-                    <p id="error-msg" class="text-red-700 font-bold text-sm mt-2 hidden"></p>
+                    <p id="error-msg" class="text-red-700 font-bold text-lg mt-3 hidden"></p>
                 </div>
             </div>
             
-            <div id="full-msg" class="hidden text-center text-red-800 font-bold text-xl mt-4 border-2 border-red-800 p-4 rounded bg-red-100">
+            <div id="full-msg" class="hidden text-center text-red-800 font-bold text-2xl mt-6 border-4 border-red-800 p-6 rounded bg-red-100">
                 ⛔ LOS 8 CUPOS ESTÁN LLENOS ⛔
             </div>
         </div>
@@ -230,11 +235,9 @@
 
     <!-- FIREBASE CONFIGURATION & LOGIC -->
     <script type="module">
-        // Importamos desde CDN para que funcione en un archivo HTML estático
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getFirestore, doc, getDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-        // TU CONFIGURACIÓN DE FIREBASE (INTEGRADA)
         const firebaseConfig = {
             apiKey: "AIzaSyBlFU5LPrhbOy4Vn5uxXjKXsAJbvLVwDHo",
             authDomain: "abyssrift-d7953.firebaseapp.com",
@@ -245,36 +248,31 @@
             measurementId: "G-DEK7N7G4X5"
         };
 
-        // Inicializar
         let db;
         try {
             const app = initializeApp(firebaseConfig);
             db = getFirestore(app);
-            listenToSlots(); // Iniciar escucha en tiempo real
+            listenToSlots(); 
         } catch (e) {
             console.error("Error al conectar Firebase", e);
             document.getElementById('db-loader').style.display = 'none';
-            document.getElementById('slots-container').innerHTML = "<p class='text-red-500 text-center'>Error de conexión.</p>";
+            document.getElementById('slots-container').innerHTML = "<p class='text-red-500 text-center font-bold text-xl'>Error de conexión.</p>";
             document.getElementById('slots-container').classList.remove('hidden');
         }
 
-        // ESCUCHAR CAMBIOS EN TIEMPO REAL
         function listenToSlots() {
-            // Colección: 'server_data', Documento: 'roster'
             const docRef = doc(db, "server_data", "roster");
-
             onSnapshot(docRef, (docSnap) => {
                 if (docSnap.exists()) {
                     const data = docSnap.data();
                     renderSlots(data.slots);
                 } else {
-                    console.log("No existe el documento. Verifica que creaste server_data > roster en Firebase.");
+                    console.log("No existe el documento.");
                     document.getElementById('db-loader').style.display = 'none';
                 }
             });
         }
 
-        // DIBUJAR LA LISTA
         function renderSlots(slotsData) {
             const container = document.getElementById('slots-container');
             const form = document.getElementById('signup-form');
@@ -290,17 +288,17 @@
                 div.className = "slot-row";
                 
                 if (slot.name && slot.name !== "") {
-                    // Slot Ocupado
+                    // Slot Ocupado (Texto más grande)
                     div.innerHTML = `
-                        <span class="font-bold text-[#b45309] w-8 font-serif text-lg">${num}.</span>
-                        <span class="text-lg font-bold font-serif italic text-[#1a120b]">${slot.name}</span>
-                        <span class="ml-auto text-[0.65rem] font-bold text-[#1e3a8a] bg-blue-100 px-2 py-0.5 rounded-full uppercase tracking-wider border border-blue-200">${slot.role}</span>
+                        <span class="font-bold text-[#b45309] w-10 font-serif text-2xl">${num}.</span>
+                        <span class="text-2xl font-bold font-serif italic text-[#1a120b] truncate mr-2">${slot.name}</span>
+                        <span class="ml-auto text-sm font-bold text-[#1e3a8a] bg-blue-100 px-3 py-1 rounded-full uppercase tracking-wider border border-blue-200 whitespace-nowrap">${slot.role}</span>
                     `;
                 } else {
                     // Slot Vacío
                     isFull = false;
                     div.innerHTML = `
-                        <span class="font-bold text-[#a8a29e] w-8 font-serif text-lg">${num}.</span>
+                        <span class="font-bold text-[#a8a29e] w-10 font-serif text-2xl">${num}.</span>
                         <span class="slot-empty">✧ Ecos del Vacío ✧</span>
                     `;
                 }
@@ -319,7 +317,6 @@
             }
         }
 
-        // ENVIAR DATOS (GLOBAL SCOPE)
         window.submitToFirebase = async function() {
             const nameInput = document.getElementById('username');
             const roleSelect = document.getElementById('user-class');
@@ -344,8 +341,6 @@
                 
                 if (docSnap.exists()) {
                     let currentSlots = docSnap.data().slots;
-                    
-                    // Buscar primer espacio vacío
                     const emptyIndex = currentSlots.findIndex(s => s.name === "");
                     
                     if (emptyIndex !== -1) {
@@ -378,7 +373,6 @@
     </script>
     
     <script>
-        // Lógica Visual
         const particleContainer = document.getElementById('particles');
         for (let i = 0; i < 30; i++) {
             const p = document.createElement('div');
