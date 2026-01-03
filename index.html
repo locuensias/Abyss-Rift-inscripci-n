@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Abyss Rift - La Llamada</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Importando módulos de Firebase -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getFirestore, doc, getDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        
+        // Exponer funciones al scope global para que los botones HTML funcionen
+        window.firebaseModules = { initializeApp, getFirestore, doc, getDoc, updateDoc, onSnapshot };
+    </script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Cormorant+Garamond:ital,wght@0,400;0,700;1,400&family=Metamorphous&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -13,6 +21,8 @@
             --parchment-light: #fdf6e3; 
             --gold-accent: #b45309;
             --text-main: #1a120b;
+            --danger-red: #7f1d1d;
+            --danger-glow: #ef4444;
         }
 
         body {
@@ -36,6 +46,7 @@
         .slide.active { display: flex; animation: majesticFadeIn 0.8s ease-out forwards; }
         @keyframes majesticFadeIn { from { opacity: 0; transform: scale(0.95) translateY(20px); filter: blur(5px); } to { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); } }
 
+        /* PERGAMINO STANDARD */
         .parchment {
             background: var(--parchment-light);
             background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png');
@@ -49,17 +60,36 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            transition: all 0.5s ease;
+        }
+
+        /* PERGAMINO PELIGROSO (BORDE DEL MUNDO) */
+        .parchment.danger-mode {
+            background: #2a0a0a; /* Rojo muy oscuro */
+            background-image: url('https://www.transparenttextures.com/patterns/cracked-concrete.png'); /* Textura más ruda */
+            box-shadow: 0 0 0 4px #7f1d1d inset, 0 0 50px rgba(220, 38, 38, 0.4);
+            border: 2px solid #ef4444;
+            color: #fca5a5;
+            animation: dangerPulse 3s infinite ease-in-out;
+        }
+
+        @keyframes dangerPulse {
+            0% { box-shadow: 0 0 20px rgba(220, 38, 38, 0.2), 0 0 0 4px #7f1d1d inset; }
+            50% { box-shadow: 0 0 60px rgba(220, 38, 38, 0.6), 0 0 0 6px #ef4444 inset; border-color: #ff0000; }
+            100% { box-shadow: 0 0 20px rgba(220, 38, 38, 0.2), 0 0 0 4px #7f1d1d inset; }
         }
 
         .gem { position: absolute; width: 24px; height: 24px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #60a5fa, #1e3a8a); border: 2px solid #d4af37; box-shadow: 0 0 10px rgba(59, 130, 246, 0.6); z-index: 10; }
+        .danger-mode .gem { background: radial-gradient(circle at 30% 30%, #fca5a5, #7f1d1d); border-color: #450a0a; box-shadow: 0 0 15px #ef4444; }
         .tl { top: 12px; left: 12px; } .tr { top: 12px; right: 12px; } .bl { bottom: 12px; left: 12px; } .br { bottom: 12px; right: 12px; }
 
+        /* BOTONES MEJORADOS */
         .btn-magic {
             background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
             color: #d4af37;
-            border: 1px solid #d4af37;
-            padding: 12px 30px;
-            font-size: 1rem;
+            border: 2px solid #d4af37;
+            padding: 14px 35px;
+            font-size: 1.1rem;
             font-family: 'Cinzel', serif;
             font-weight: 700;
             cursor: pointer;
@@ -67,32 +97,71 @@
             letter-spacing: 2px;
             position: relative;
             overflow: hidden;
-            transition: all 0.4s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5), 0 0 10px rgba(212, 175, 55, 0.1);
             border-radius: 4px;
+            z-index: 5;
         }
-        .btn-magic:hover { transform: translateY(-2px); color: #fcd34d; border-color: #fcd34d; }
+
+        .btn-magic::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.2), transparent);
+            transition: 0.5s;
+            z-index: -1;
+        }
+
+        .btn-magic:hover {
+            transform: translateY(-3px) scale(1.02);
+            color: #fffbeb;
+            border-color: #fbbf24;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.6), 0 0 40px rgba(212, 175, 55, 0.3) inset;
+            text-shadow: 0 0 8px rgba(255, 215, 0, 0.8);
+        }
+
+        .btn-magic:hover::before { left: 100%; }
+
+        /* BOTON PELIGROSO */
+        .btn-danger-glow {
+            background: linear-gradient(135deg, #450a0a 0%, #7f1d1d 100%);
+            color: #fca5a5;
+            border-color: #ef4444;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+        }
+        .btn-danger-glow:hover {
+            background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%);
+            color: white;
+            border-color: #ff0000;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.8), 0 0 50px rgba(255, 0, 0, 0.4) inset;
+            text-shadow: 0 0 10px red;
+        }
 
         .divider { display: flex; align-items: center; justify-content: center; margin: 1.5rem 0; opacity: 0.9; color: #854d0e; font-size: 1.5rem; }
         .divider::before, .divider::after { content: ''; height: 2px; background: linear-gradient(90deg, transparent, #854d0e, transparent); flex: 1; margin: 0 15px; }
 
-        /* Ajuste de fuentes: Legible pero no gigante */
         .magic-label { display: block; font-family: 'Cinzel', serif; font-size: 0.95rem; font-weight: bold; color: #7c2d12; margin-bottom: 0.3rem; text-transform: uppercase; }
         .magic-input, .magic-select { background: rgba(255, 255, 255, 0.9); border: 2px solid #b45309; padding: 8px 12px; width: 100%; font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 600; color: #1a120b; outline: none; border-radius: 4px; }
         
         .slot-row { padding: 8px 0; border-bottom: 1px solid rgba(180, 83, 9, 0.2); font-family: 'Cormorant Garamond', serif; display: flex; align-items: center; transition: all 0.5s ease; }
         .slot-empty { color: #a8a29e; font-style: italic; opacity: 0.7; font-size: 1.1rem; }
         .highlight-text { color: #7c2d12; font-weight: bold; border-bottom: 2px solid rgba(180, 83, 9, 0.5); }
-        /* Disclaimer ahora legible (text-base) en lugar de text-xs */
         .disclaimer-box { background-color: rgba(234, 179, 8, 0.15); border-left: 4px solid #b45309; padding: 8px; font-size: 0.95rem; color: #451a03; margin-top: 5px; line-height: 1.4; }
 
-        /* Scrollbar personalizado */
         .custom-scrollbar::-webkit-scrollbar { width: 8px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #b45309; border-radius: 20px; }
 
-        /* Loader */
         .loader { border: 4px solid #f3f3f3; border-top: 4px solid #b45309; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 0 auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Efecto Glitch para texto peligroso */
+        .glitch-text { position: relative; display: inline-block; }
+        .glitch-text::before, .glitch-text::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #2a0a0a; }
+        .glitch-text::before { left: 2px; text-shadow: -1px 0 #00ffff; clip: rect(24px, 550px, 90px, 0); animation: glitch-anim-2 3s infinite linear alternate-reverse; }
+        .glitch-text::after { left: -2px; text-shadow: -1px 0 #ff0000; clip: rect(85px, 550px, 140px, 0); animation: glitch-anim 2.5s infinite linear alternate-reverse; }
+        @keyframes glitch-anim { 0% { clip: rect(14px, 9999px, 127px, 0); } 100% { clip: rect(66px, 9999px, 15px, 0); } }
+        @keyframes glitch-anim-2 { 0% { clip: rect(69px, 9999px, 81px, 0); } 100% { clip: rect(18px, 9999px, 96px, 0); } }
     </style>
 </head>
 <body>
@@ -109,15 +178,18 @@
             <div class="divider">⚜️</div>
             <p class="text-xl italic mb-8 font-serif leading-relaxed text-[#1a120b] font-semibold">
                 Saludos, viajero. Si estás leyendo este aviso, es porque has sido convocado.<br>
+            </p>
             <p class="text-xl italic mb-8 font-serif leading-relaxed text-[#1a120b] font-semibold">
              El mundo que conocemos pende de un hilo, y una antigua Voz busca campeones para detener el cataclismo.<br>
                 <span class="text-[#1e40af]">¿Tenéis el valor para enfrentaros a la oscuridad?</span>
             </p>
-            <button class="btn-magic" onclick="nextSlide(2)">Ver el Contrato</button>
+            <div>
+                <button class="btn-magic" onclick="nextSlide(2)">Ver el Contrato</button>
+            </div>
         </div>
     </div>
 
-    <!-- SLIDE 2 (Tamaños reajustados) -->
+    <!-- SLIDE 2 -->
     <div class="slide" id="slide-2">
         <h2 class="text-4xl text-[#fef3c7] mb-6 title-font text-center drop-shadow-md">Arte y Hogar</h2>
         <div class="parchment">
@@ -129,7 +201,7 @@
                     <p class="mb-5 text-xl text-[#2c241b] font-medium leading-relaxed">No todo es sangre y acero. Si deseas alejarte del grupo, poner tu música favorita y pasar horas diseñando la torre perfecta o una cabaña junto al lago... <span class="highlight-text">hazlo.</span></p>
                     <p class="mb-5 text-xl text-[#2c241b] font-medium leading-relaxed">Este mundo es tu refugio y tienes total libertad para encontrar paz en la construcción y exploración.</p>
                     <div class="bg-[#fff7ed] p-5 rounded border-l-4 border-[#b45309]">
-                        <p class="text-sm font-bold text-[#9a3412] uppercase mb-1">✦ Consejo del Oráculoa:</p>
+                        <p class="text-sm font-bold text-[#9a3412] uppercase mb-1">✦ Consejo del Oráculo:</p>
                         <p class="italic text-[#431407] text-lg">disfruta cada bloque que coloques, pero no te apegues a la eternidad. Existe un <strong>Final Canónico</strong>. Construye por la belleza del momento, no para que dure mil años.</p>
                     </div>
                 </div>
@@ -138,7 +210,7 @@
         <div class="mt-6"><button class="btn-magic" onclick="nextSlide(3)">Continuar</button></div>
     </div>
 
-    <!-- SLIDE 3 (Tamaños reajustados) -->
+    <!-- SLIDE 3 -->
     <div class="slide" id="slide-3">
         <h2 class="text-4xl text-[#fef3c7] mb-6 title-font text-center drop-shadow-md">Código de Honor</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-6xl px-4">
@@ -158,27 +230,51 @@
         <div class="mt-6"><button class="btn-magic" onclick="nextSlide(4)">La Zona Prohibida</button></div>
     </div>
 
-    <!-- SLIDE 4 (Tamaños reajustados) -->
+    <!-- SLIDE 4 (PELIGROSA) -->
     <div class="slide" id="slide-4">
-        <div class="parchment text-center" style="border: 3px solid #7f1d1d; background: #fff5f5;">
+        <!-- Parchment modificado con clase 'danger-mode' -->
+        <div class="parchment danger-mode text-center">
             <div class="gem tl"></div><div class="gem tr"></div><div class="gem bl"></div><div class="gem br"></div>
-            <h2 class="text-4xl font-black text-[#9f1239] mb-4 uppercase title-font">⚠️ El Borde del Mundo ⚠️</h2>
-            <div class="mb-6 border-y-2 border-[#9f1239] py-2 inline-block">
-                <p class="text-2xl font-bold elegant-serif text-[#7f1d1d]">Límite: Radio de 625 Chunks</p>
+            
+            <h2 class="text-4xl md:text-5xl font-black text-[#ef4444] mb-4 uppercase title-font glitch-text" data-text="⚠️ EL BORDE DEL MUNDO ⚠️">
+                ⚠️ EL BORDE DEL MUNDO ⚠️
+            </h2>
+            
+            <div class="mb-6 border-y-2 border-[#ef4444] py-2 inline-block bg-black/30 px-6">
+                <p class="text-2xl font-bold elegant-serif text-[#fca5a5] tracking-widest animate-pulse">Límite: Radio de 625 Chunks</p>
             </div>
-            <p class="text-xl mb-6 text-[#4a044e] font-bold">Más allá de este horizonte, la realidad se desmorona. Nuestro mundo físico no puede sostener la existencia fuera de este círculo sagrado.</p>
-            <div class="bg-[#2e1065] text-white p-5 rounded text-left mx-auto max-w-xl">
-                <ul class="space-y-3 text-lg">
-                    <li>Cruzar la frontera colapsará el servidor para todos.</li>
-                    <li>Si te desconectas fuera, caerás en un bucle de error eterno.</li>
-                    <li class="text-red-300 font-bold">Solución única: Borrado total de tu inventario y datos.</li>
+            
+            <p class="text-xl mb-6 text-[#f87171] font-bold drop-shadow-md max-w-2xl mx-auto">
+                Más allá de este horizonte, la realidad se desmorona. Nuestro mundo físico no puede sostener la existencia fuera de este círculo sagrado.
+            </p>
+            
+            <div class="bg-black/40 border border-[#7f1d1d] text-gray-200 p-6 rounded text-left mx-auto max-w-xl shadow-[0_0_20px_rgba(255,0,0,0.2)]">
+                <ul class="space-y-4 text-lg">
+                    <li class="flex items-start gap-3">
+                        <span class="text-2xl">💀</span>
+                        <span>Cruzar la frontera colapsará el servidor para todos.</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-2xl">⏳</span>
+                        <span>Si te desconectas fuera, caerás en un bucle de error eterno.</span>
+                    </li>
+                    <li class="text-[#fca5a5] font-bold flex items-start gap-3 border-t border-[#7f1d1d] pt-3 mt-2">
+                        <span class="text-2xl">🔥</span>
+                        <span>Solución única: Borrado total de tu inventario y datos.</span>
+                    </li>
                 </ul>
             </div>
-            <div class="mt-6"><button class="btn-magic" style="border-color:#9f1239; color:#9f1239" onclick="nextSlide(5)">Entendido</button></div>
+            
+            <div class="mt-8">
+                <!-- Botón especial de peligro -->
+                <button class="btn-magic btn-danger-glow" onclick="nextSlide(5)">
+                    ENTENDIDO - NO CRUZARÉ
+                </button>
+            </div>
         </div>
     </div>
 
-    <!-- SLIDE 5: FIREBASE LOGIC (Tamaños reajustados) -->
+    <!-- SLIDE 5: FIREBASE LOGIC -->
     <div class="slide" id="slide-5">
         <h2 class="text-5xl text-[#fef3c7] mb-4 title-font text-center drop-shadow-md">El Pacto Final</h2>
         <div class="parchment flex flex-col items-center" style="max-width: 650px; padding: 2.5rem;">
@@ -219,12 +315,11 @@
                         <option value="Duelista">🗡️ Duelista</option>
                         <option value="Tirador">🏹 Tirador</option>
                     </select>
-                    <!-- Notas legibles -->
                     <p class="text-sm text-[#7c2d12] mt-1 italic font-semibold">* Solo es una referencia, no genera cambio ni consecuencia en el juego.</p>
                 </div>
 
                 <div class="text-center w-full mt-6">
-                    <button id="join-btn" class="w-full text-lg bg-gradient-to-r from-[#1e3a8a] to-[#1e40af] text-white py-3 px-6 rounded shadow-lg elegant-serif border border-[#60a5fa] flex items-center justify-center gap-3" onclick="submitToFirebase()">
+                    <button id="join-btn" class="w-full text-lg bg-gradient-to-r from-[#1e3a8a] to-[#1e40af] text-white py-3 px-6 rounded shadow-lg elegant-serif border border-[#60a5fa] flex items-center justify-center gap-3 transition-transform hover:scale-105" onclick="submitToFirebase()">
                         <span class="text-xl">✒️</span> <span class="tracking-widest font-bold">RECLAMAR LUGAR</span>
                     </button>
                     <p id="error-msg" class="text-red-700 font-bold text-base mt-2 hidden"></p>
@@ -237,10 +332,10 @@
         </div>
     </div>
 
-    <!-- FIREBASE CONFIGURATION & LOGIC -->
+    <!-- LOGICA JS / FIREBASE (MODULAR) -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getFirestore, doc, getDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        // Usamos los módulos que ya importamos arriba en el window.firebaseModules
+        const { initializeApp, getFirestore, doc, getDoc, updateDoc, onSnapshot } = window.firebaseModules;
 
         const firebaseConfig = {
             apiKey: "AIzaSyBlFU5LPrhbOy4Vn5uxXjKXsAJbvLVwDHo",
@@ -256,6 +351,8 @@
         try {
             const app = initializeApp(firebaseConfig);
             db = getFirestore(app);
+            // Exponer db para las funciones globales si es necesario, aunque aquí lo manejamos localmente al módulo
+            window.dbInstance = db; 
             listenToSlots(); 
         } catch (e) {
             console.error("Error al conectar Firebase", e);
@@ -292,7 +389,7 @@
                 div.className = "slot-row";
                 
                 if (slot.name && slot.name !== "") {
-                    // Slot Ocupado (Letra grande pero controlada)
+                    // Slot Ocupado
                     div.innerHTML = `
                         <span class="font-bold text-[#b45309] w-10 font-serif text-xl">${num}.</span>
                         <span class="text-xl font-bold font-serif italic text-[#1a120b] truncate mr-2">${slot.name}</span>
@@ -321,7 +418,23 @@
             }
         }
 
+        function romanize(num) {
+            const lookup = {M:1000,CM:900,D:500,CD:400,C:100,XC:90,L:50,XL:40,X:10,IX:9,V:5,IV:4,I:1};
+            let roman = '', i;
+            for ( i in lookup ) {
+                while ( num >= lookup[i] ) { roman += i; num -= lookup[i]; }
+            }
+            return roman + '.';
+        }
+    </script>
+    
+    <!-- Lógica de UI Global y envío de formulario -->
+    <script>
+        // Funciones globales para que el HTML onclick las vea
         window.submitToFirebase = async function() {
+            const { doc, getDoc, updateDoc } = window.firebaseModules;
+            const db = window.dbInstance;
+
             const nameInput = document.getElementById('username');
             const roleSelect = document.getElementById('user-class');
             const btn = document.getElementById('join-btn');
@@ -366,17 +479,6 @@
             btn.innerHTML = '<span class="text-xl">✒️</span> <span class="tracking-widest font-bold">RECLAMAR LUGAR</span>';
         }
 
-        function romanize(num) {
-            const lookup = {M:1000,CM:900,D:500,CD:400,C:100,XC:90,L:50,XL:40,X:10,IX:9,V:5,IV:4,I:1};
-            let roman = '', i;
-            for ( i in lookup ) {
-                while ( num >= lookup[i] ) { roman += i; num -= lookup[i]; }
-            }
-            return roman + '.';
-        }
-    </script>
-    
-    <script>
         const particleContainer = document.getElementById('particles');
         for (let i = 0; i < 30; i++) {
             const p = document.createElement('div');
@@ -387,6 +489,7 @@
             p.style.animationDelay = '-' + (Math.random() * 10) + 's';
             particleContainer.appendChild(p);
         }
+
         function nextSlide(n) {
             document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
             document.getElementById(`slide-${n}`).classList.add('active');
