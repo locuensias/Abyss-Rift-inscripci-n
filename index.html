@@ -10,7 +10,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getFirestore, doc, getDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
         
-        // Exponer funciones al scope global para que los botones HTML funcionen
+        // Exponer funciones al scope global
         window.firebaseModules = { initializeApp, getFirestore, doc, getDoc, updateDoc, onSnapshot };
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Cormorant+Garamond:ital,wght@0,400;0,700;1,400&family=Metamorphous&display=swap" rel="stylesheet">
@@ -65,8 +65,8 @@
 
         /* PERGAMINO PELIGROSO (BORDE DEL MUNDO) */
         .parchment.danger-mode {
-            background: #2a0a0a; /* Rojo muy oscuro */
-            background-image: url('https://www.transparenttextures.com/patterns/cracked-concrete.png'); /* Textura más ruda */
+            background: #2a0a0a;
+            background-image: url('https://www.transparenttextures.com/patterns/cracked-concrete.png');
             box-shadow: 0 0 0 4px #7f1d1d inset, 0 0 50px rgba(220, 38, 38, 0.4);
             border: 2px solid #ef4444;
             color: #fca5a5;
@@ -123,7 +123,6 @@
 
         .btn-magic:hover::before { left: 100%; }
 
-        /* BOTON PELIGROSO */
         .btn-danger-glow {
             background: linear-gradient(135deg, #450a0a 0%, #7f1d1d 100%);
             color: #fca5a5;
@@ -155,7 +154,6 @@
         .loader { border: 4px solid #f3f3f3; border-top: 4px solid #b45309; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 0 auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* Efecto Glitch para texto peligroso */
         .glitch-text { position: relative; display: inline-block; }
         .glitch-text::before, .glitch-text::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #2a0a0a; }
         .glitch-text::before { left: 2px; text-shadow: -1px 0 #00ffff; clip: rect(24px, 550px, 90px, 0); animation: glitch-anim-2 3s infinite linear alternate-reverse; }
@@ -232,7 +230,6 @@
 
     <!-- SLIDE 4 (PELIGROSA) -->
     <div class="slide" id="slide-4">
-        <!-- Parchment modificado con clase 'danger-mode' -->
         <div class="parchment danger-mode text-center">
             <div class="gem tl"></div><div class="gem tr"></div><div class="gem bl"></div><div class="gem br"></div>
             
@@ -266,7 +263,6 @@
             </div>
             
             <div class="mt-8">
-                <!-- Botón especial de peligro -->
                 <button class="btn-magic btn-danger-glow" onclick="nextSlide(5)">
                     ENTENDIDO - NO CRUZARÉ
                 </button>
@@ -292,7 +288,6 @@
                  <div id="db-loader" class="loader"></div>
 
                  <div id="slots-container" class="space-y-2 max-h-[220px] overflow-y-auto pr-3 custom-scrollbar hidden">
-                    <!-- SE LLENA CON JAVASCRIPT -->
                  </div>
             </div>
 
@@ -315,7 +310,8 @@
                         <option value="Duelista">🗡️ Duelista</option>
                         <option value="Tirador">🏹 Tirador</option>
                     </select>
-                    <p class="text-sm text-[#7c2d12] mt-1 italic font-semibold">* Solo es una referencia, no genera cambio ni consecuencia en el juego.</p>
+                    <!-- AQUI SE HIZO EL CAMBIO: text-lg en lugar de text-sm -->
+                    <p class="text-lg text-[#7c2d12] mt-2 italic font-bold">* Solo es una referencia, no genera cambio ni consecuencia en el juego.</p>
                 </div>
 
                 <div class="text-center w-full mt-6">
@@ -334,7 +330,6 @@
 
     <!-- LOGICA JS / FIREBASE (MODULAR) -->
     <script type="module">
-        // Usamos los módulos que ya importamos arriba en el window.firebaseModules
         const { initializeApp, getFirestore, doc, getDoc, updateDoc, onSnapshot } = window.firebaseModules;
 
         const firebaseConfig = {
@@ -351,7 +346,6 @@
         try {
             const app = initializeApp(firebaseConfig);
             db = getFirestore(app);
-            // Exponer db para las funciones globales si es necesario, aunque aquí lo manejamos localmente al módulo
             window.dbInstance = db; 
             listenToSlots(); 
         } catch (e) {
@@ -389,14 +383,12 @@
                 div.className = "slot-row";
                 
                 if (slot.name && slot.name !== "") {
-                    // Slot Ocupado
                     div.innerHTML = `
                         <span class="font-bold text-[#b45309] w-10 font-serif text-xl">${num}.</span>
                         <span class="text-xl font-bold font-serif italic text-[#1a120b] truncate mr-2">${slot.name}</span>
                         <span class="ml-auto text-xs font-bold text-[#1e3a8a] bg-blue-100 px-2 py-1 rounded-full uppercase tracking-wider border border-blue-200 whitespace-nowrap">${slot.role}</span>
                     `;
                 } else {
-                    // Slot Vacío
                     isFull = false;
                     div.innerHTML = `
                         <span class="font-bold text-[#a8a29e] w-10 font-serif text-xl">${num}.</span>
@@ -428,9 +420,7 @@
         }
     </script>
     
-    <!-- Lógica de UI Global y envío de formulario -->
     <script>
-        // Funciones globales para que el HTML onclick las vea
         window.submitToFirebase = async function() {
             const { doc, getDoc, updateDoc } = window.firebaseModules;
             const db = window.dbInstance;
